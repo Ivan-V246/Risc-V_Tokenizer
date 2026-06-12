@@ -12,19 +12,20 @@
 # a4: guarda o valor 1 para comparacao 
 # a5: guarda 3 para operacoes
 .data 
-	ARRAY: .word -1, 0, 200, 19, 3, 50, 61, 55, 22, 9, 45, 23 # Array com os valores a ser ordenado
-	SIZE_ARRAY: .word 12 # Tamanho do array
-	BYTES_OBJECT: .word 4 # Tamanho de cada objeto no array
+	ARRAY: .word 3, -3, 2, -2, 1, -1 # Array com os valores a ser ordenado
+	SIZE_ARRAY: .word 3 # Tamanho do array
+	BYTES_OBJECT: .word 8 # Tamanho de cada objeto no array
+	TMP_KEY: .space 8 # Temporario para key
 	
 .text
 .globl SORTBUCK
 
 SORTBUCK:
     # Salva o estado anterior na pilha
-    addi sp, sp, -12
-    sw t0, 8(sp)
-    sw t1, 4(sp)
-    sw ra, 0(sp)
+    #addi sp, sp, -12
+    #sw t0, 8(sp)
+    #sw t1, 4(sp)
+    #sw ra, 0(sp)
   
     INIT: 
         la a0, ARRAY # a0 = ARRAY   
@@ -68,7 +69,15 @@ SORTBUCK:
             # key = ARRAY[I]
             mul t3, t1, a2
             add t3, t3, a0
-            lw t3, 0(t3)
+            lw s2, 0(t3)
+            lw s3, 4(t3)
+            
+            # Guarda os valores de key 
+            la s1, TMP_KEY
+            sw s2, 0(s1)
+            sw s3, 4(s1)
+            
+            addi t3, s2, 0
             
             WHILE_SWAP:
                 blt t2, x0, NEXT_KEY
@@ -86,6 +95,8 @@ SORTBUCK:
                 mul t5, t5, a2
                 add t5, t5, a0
                 sw t6, 0(t5)
+                lw t6, 4(t4)
+                sw t6, 4(t5)
                 
                 # J -= gap
                 sub t2, t2, a3 
@@ -98,7 +109,14 @@ SORTBUCK:
                 mul t5, t5, a2
                 add t5, t5, a0
                 
-                sw t3, 0(t5) 
+                # Recupera key 
+	            la s1, TMP_KEY
+	            lw s2, 0(s1)
+	            lw s3, 4(s1)
+                
+                # Escreve key no lugar correto
+                sw s2, 0(t5)
+                sw s3, 4(t5) 
                 
                 # I = I + 1
                 addi t1, t1, 1

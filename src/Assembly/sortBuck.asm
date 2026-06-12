@@ -105,7 +105,7 @@ SORTBUCK:
                 blt t1, a1, FOR_I
                 
                 addi a3, a3, -1
-              q  div a3, a3, a5
+                div a3, a3, a5
                 
                 jal x0, WHILE_GAP 
 

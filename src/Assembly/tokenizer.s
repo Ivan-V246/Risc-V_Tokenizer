@@ -83,14 +83,6 @@ loop_tokenizer:
 	#Carrega a frequência atual em s5
 	lw s5, 4(s4)
 
-	mv a0, s5
-	li a7, 1
-	ecall
-
-	li a7, 11
-	li a0, 10
-	ecall
-
 	#Se for zero, espaço livre
 	beq s5, x0, salva_token
 
@@ -176,7 +168,7 @@ atualiza_posicao_hash:
 	jal x0, loop_tokenizer
 
 fim_tokenizer: 
-	
+	mv a0, t3
     lw ra, 28(sp)
     lw t0, 24(sp)
     lw t1, 20(sp)

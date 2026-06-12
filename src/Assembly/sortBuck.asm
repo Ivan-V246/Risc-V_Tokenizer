@@ -2,20 +2,26 @@
 # Função: sortBuck
 # Descrição: Ordena os bucks de palavra pela freqência.
 # Buck: Estrutura de dados de 8 bytes nos quais os primeiros 4 bytes são o endereço base da palavra e os outros 4 bytes são a sua frequêcia  
-#
-# @param a0: Base do array buck.
-# @param a1: Quantidade de elementos no array buck.    
-# a0: Base do array para ser ordenado 
-# a1: Tamanho de cada objeto 
-# a2: Quantidade de bytes total do array
+#    
+# @param a0: Base do array para ser ordenado. 
+# @param a1: Quantidade de elemento no array.
+# @param a2: Tamanho de cada elemento do array.
+# @param a3: Index de ordenação.
+
 # a3: Gap do sheellsort
 # a4: guarda o valor 1 para comparacao 
 # a5: guarda 3 para operacoes
+
+# t1: gap 
+# t2: I
+# t3: J
+
 .data 
-	ARRAY: .word 3, -3, 2, -2, 1, -1 # Array com os valores a ser ordenado
+	ARRAY: .word 8, 2, -10, 1, 6, 5, 3, 10, 4 # Array com os valores a ser ordenado
 	SIZE_ARRAY: .word 3 # Tamanho do array
-	BYTES_OBJECT: .word 8 # Tamanho de cada objeto no array
-	TMP_KEY: .space 8 # Temporario para key
+	BYTES_OBJECT: .word 12 # Tamanho de cada objeto no array
+    INDEX_SORT: .word 2 # Index de ordenacao de cada objeto
+	TMP_KEY: .space 12 # Temporario para key
 	
 .text
 .globl SORTBUCK
@@ -30,100 +36,135 @@ SORTBUCK:
     INIT: 
         la a0, ARRAY # a0 = ARRAY   
         
-        # t1 = *SIZE_ARRAY
+        # a1 = *SIZE_ARRAY
         la a1, SIZE_ARRAY
         lw a1, 0(a1) 
         
-        # a1 = *BYTES_OBJECT
+        # a2 = *BYTES_OBJECT
         la a2, BYTES_OBJECT 
         lw a2, 0(a2) 
         
+        # a3 = *INDEX_SORT 
+        la a3, INDEX_SORT
+        lw a3, 0(a3)
+
         # FIND_GAP
-            # gap = 1
-            addi a3, x0, 1
-            addi a5, x0, 3 
+        # gap = 1
+        addi t1, x0, 1
+        addi a5, x0, 3 
             
         LOOP_GAP:
             # a3 = (a1 * 3) + 1
-            mul a3, a3, a5
-            addi a3, a3, 1 
+            mul t1, t1, a5
+            addi t1, t1, 1 
             
-            blt a3, a1, LOOP_GAP
+            blt t1, a1, LOOP_GAP
         
         # a3 = (a3 / 3) -1
-        addi a3, a3, -1
-        div a3, a3, a5
+        addi t1, t1, -1
+        div t1, t1, a5
         
         addi a4, x0, 1 # Guarda 1 para comparacao
         
     WHILE_GAP: 
-        blt a3, a4, END_SORTBUCK
+        blt t1, a4, END_SORTBUCK
         
         # I = gap 
-        addi t1, a3, 0
+        addi t2, t1, 0
     
         FOR_I:
             # J = I - gap
-            sub t2, t1, a3
+            sub t3, t2, t1
             
             # key = ARRAY[I]
-            mul t3, t1, a2
-            add t3, t3, a0
-            lw s2, 0(t3)
-            lw s3, 4(t3)
+            mul t4, t2, a2
+            add t4, t4, a0
+
+            addi t5, a2, 0
+            la t6, TMP_KEY 
+
+            # Salva a key em um lugar reservado
+            SAVE_KEY:
+                lw s0, 0(t4)
+                sw s0, 0(t6)
+
+                addi t4, t4, 4
+                addi t6, t6, 4
+                addi t5, t5, -4
+
+                bne t5, x0, SAVE_KEY 
             
-            # Guarda os valores de key 
-            la s1, TMP_KEY
-            sw s2, 0(s1)
-            sw s3, 4(s1)
-            
-            addi t3, s2, 0
+            # Index de ordenacao
+            sub t4, t4, a2
+            addi t5, x0, 4
+            mul t5, t5, a3
+            add t4, t4, t5 
+            lw t4, 0(t4) # t5 = key 
             
             WHILE_SWAP:
-                blt t2, x0, NEXT_KEY
+                blt t3, x0, NEXT_KEY
                 
-                # t4 = ARRAY[J]
-                mul t4, t2, a2
-                add t4, t4, a0
-                lw t6, 0(t4) 
+                # Index de ordenacao do elemento J
+                mul t5, t3, a2
+                addi t6, x0, 4
+                mul t6, t6, a3
+                add t5, t5, t6
+                add t5, t5, a0
+                lw t6, 0(t5) 
                 
-                bge t3, t6, NEXT_KEY 
+                bge t6, t4, NEXT_KEY 
                 
-                # PARTE SWAP
-                # ARRAY[J + gap] = ARRAY[j] 
-                add t5, t2, a3
+                # End[j + gap] 
+                add t5, t3, t1
                 mul t5, t5, a2
                 add t5, t5, a0
-                sw t6, 0(t5)
-                lw t6, 4(t4)
-                sw t6, 4(t5)
+
+                # End[j]
+                add t6, t3, x0
+                mul t6, t6, a2
+                add t6, t6, a0
+
+                # M[j + gap] = M[j]
+                addi a6, a2, 0
+                PUSH_J:
+                    lw s0, 0(t6)
+                    sw s0, 0(t5)
+
+                    addi t6, t6, 4
+                    addi t5, t5, 4
+                    addi a6, a6, -4
+
+                    bne a6, x0, PUSH_J
                 
                 # J -= gap
-                sub t2, t2, a3 
-                
+                sub t3, t3, t1  
                 jal x0, WHILE_SWAP
             
             NEXT_KEY: 
-                # ARRAY[J + gap] = ARRAY[j] 
-                add t5, t2, a3
+                # ARRAY[J + gap] 
+                add t5, t3, t1
                 mul t5, t5, a2
                 add t5, t5, a0
                 
                 # Recupera key 
-	            la s1, TMP_KEY
-	            lw s2, 0(s1)
-	            lw s3, 4(s1)
+	            la t6, TMP_KEY
+                addi a6, a2, 0
+
+                WRITE_KEY:
+                    lw s0, 0(t6)
+                    sw s0, 0(t5)
+
+                    addi t6, t6, 4
+                    addi t5, t5, 4
+                    addi a6, a6, -4
+
+                    bne a6, x0, WRITE_KEY 
                 
-                # Escreve key no lugar correto
-                sw s2, 0(t5)
-                sw s3, 4(t5) 
+                addi t2, t2, 1
+                blt t2, a1, FOR_I
                 
-                # I = I + 1
-                addi t1, t1, 1
-                blt t1, a1, FOR_I
-                
-                addi a3, a3, -1
-                div a3, a3, a5
+                addi t1, t1, -1
+                div t1, t1, a5
                 
                 jal x0, WHILE_GAP 
 

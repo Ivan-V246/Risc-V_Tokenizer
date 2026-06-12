@@ -1,7 +1,7 @@
 .data 
-    HashTable:   .space 79784
-    HashTableSize:   .word 9973
-    frase: .asciz "hy-ago hyago   im.proprio, the duck  sla ooobbaaaa"
+    HashTable:   .space 80056
+    HashTableSize:   .word 10007
+    frase: .asciz "hy-ago hyago hy.hy-hy! ago . .im.im pproprio, the duck  sla ooobbaaaa sla sla "
 
 .text
 .globl main

@@ -13,10 +13,12 @@
 .text
 .globl hashfunc
 hashfunc:
-	addi sp, sp, -24
-    sw t0, 20(sp)
-    sw t1, 16(sp)
-    sw t2, 12(sp)
+	addi sp, sp, -32
+    sw ra, 28(sp)
+    sw t0, 24(sp)
+    sw t1, 20(sp)
+    sw t2, 16(sp)
+	sw t3, 12(sp)
 	sw t4, 8(sp)
     sw t5, 4(sp)
     sw t6, 0(sp)
@@ -42,13 +44,15 @@ hashfunc:
 fim_hashfunc:
     remu a0, t0, a2
 
-    lw t0, 20(sp)
-    lw t1, 16(sp)
-    lw t2, 12(sp)
+    lw ra, 28(sp)
+    lw t0, 24(sp)
+    lw t1, 20(sp)
+    lw t2, 16(sp)
+	lw t3, 12(sp)
 	lw t4, 8(sp)
     lw t5, 4(sp)
     lw t6, 0(sp)
-    addi sp, sp, 24
+    addi sp, sp, 32
 
     ret
 

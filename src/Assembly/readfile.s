@@ -46,3 +46,14 @@ file_error:
 fim:
     la a0, buffer
     jalr x0, ra, 0  
+
+
+
+
+    li a7, 1
+	ecall
+
+	addi t0, x0, 10
+	li a7, 11
+	add a0, t0, x0
+	ecall

@@ -14,8 +14,16 @@
 .globl strncpy
 
 strncpy:
-    addi sp, sp, -4
-    sw a0, 0(sp)
+    addi sp, sp, -36
+    sw a0, 32(sp)
+    sw ra, 28(sp)
+    sw t0, 24(sp)
+    sw t1, 20(sp)
+    sw t2, 16(sp)
+	sw t3, 12(sp)
+	sw t4, 8(sp)
+    sw t5, 4(sp)
+    sw t6, 0(sp)
     
     loop_strncpy: 
         beq x0, a2, fim_strncpy
@@ -33,8 +41,17 @@ fim_strncpy:
     addi a0, a0, 1
     sb x0, 0(a0)
 
-    lw a0, 0(sp)
-    addi sp, sp, 4
+    lw a0, 32(sp)
+    lw ra, 28(sp)
+    lw t0, 24(sp)
+    lw t1, 20(sp)
+    lw t2, 16(sp)
+	lw t3, 12(sp)
+	lw t4, 8(sp)
+    lw t5, 4(sp)
+    lw t6, 0(sp)
+    addi sp, sp, 36
+
     ret
 
 

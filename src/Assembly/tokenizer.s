@@ -28,7 +28,10 @@ tokenizer:
     sw t6, 0(sp)
 
     #Inicializa os dois ponteiros, e as letras 'a' e 'z' para comparação
-	mv t3, a1
+	mv t3, a1 #t3 -> Endereço da HashTable
+
+	slli s8, a2, 3
+	add s8, s8, t3 #s8 -> Maior endereço possível da HashTable
 
 	mv t5, a0
 	add t6, t5, x0
@@ -43,6 +46,7 @@ testa_caractere:
     #Carrega o caractere e imprime na tela caso esteja entre 'a' e 'z'
 	
 	lbu t0, 0(t6)
+	
 	blt t0, t1, not_letra
 	bgt t0, t2, not_letra
 
@@ -56,18 +60,69 @@ not_letra:
 
     sub t4, t6, t5
 
-	#Chama Hashfunc, a0 -> Hash do Token
+	#Chama Hashfunc, s3 -> Hash do Token
+	addi sp, sp, -8
+    sw a1, 4(sp)
+    sw a0, 0(sp)
+
 	mv a0, t5
 	mv a1, t4
 	jal hashfunc
 
-	li a7, 1
-    ecall
+	mv s3, a0
 
-	addi t0, x0, 10
-	li a7, 11
-	add a0, t0, x0
+	lw a1, 4(sp)
+	lw a0, 0(sp)
+	addi sp, sp, 8
+
+	#S4 conterá o endereço do ponteiro na HashTable, s4+4 conterá a frequência
+	slli s4, s3, 3
+	add s4, s4, t3
+
+loop_tokenizer:
+	#Carrega a frequência atual em s5
+	lw s5, 4(s4)
+
+	mv a0, s5
+	li a7, 1
 	ecall
+
+	li a7, 11
+	li a0, 10
+	ecall
+
+	#Se for zero, espaço livre
+	beq s5, x0, salva_token
+
+	#Implementar o caso triste
+	addi sp, sp,  -12
+	sw s5, 0(sp)
+	sw a1, 4(sp)
+	sw t0, 8(sp)
+
+	lw s5, 0(s4) #s5 -> Endereço da palavra na heap
+	
+	lb t0, 0(t6) #t0 -> Caractere finalizador do token
+
+	sb x0, 0(t6)
+
+	mv a0, t5
+	mv a1, s5
+	jal strcomp
+
+	sb t0, 0(t6)
+
+	lw s5, 0(sp)
+	lw a1, 4(sp)
+	lw t0, 8(sp)
+	addi sp, sp,  12
+
+	#a0 -> Contém se as strings são iguais
+	beq a0, x0, atualiza_posicao_hash
+
+	lw s6, 4(s4)
+	addi s6, s6, 1
+	sw s6, 4(s4)
 	
 atualiza_ponteiro_tokenizer:
     #Atualiza os ponteiros para procurar novos tokens
@@ -77,6 +132,48 @@ atualiza_ponteiro_tokenizer:
 	addi t6, t6, 1
 	add t5, t6, x0
 	j testa_caractere
+
+salva_token:
+	addi sp, sp,  -4
+	sw t4, 0(sp)
+	
+	addi t4, t4, 1
+	mv a0, t4
+	li a7, 9
+	ecall
+
+	lw t4, 0(sp)
+	addi sp, sp, 4
+
+	#a0 -> Contém o endereço da string na heap
+
+	addi sp, sp,  -8
+	sw a1, 0(sp)
+	sw a2, 4(sp)
+
+	mv a1, t5
+	mv a2, t4
+
+	jal strncpy
+
+	lw a1, 0(sp)
+	lw a2, 4(sp)
+	addi sp, sp, 8
+
+	#a0 -> Início da string na Heap
+
+	addi s5, s5, 1
+	sw s5, 4(s4)
+	sw a0, 0(s4)
+	j atualiza_ponteiro_tokenizer
+
+atualiza_posicao_hash:
+	addi s4, s4, 8
+
+	bne s4, s8, loop_tokenizer
+
+	mv s4, t3
+	jal x0, loop_tokenizer
 
 fim_tokenizer: 
 	

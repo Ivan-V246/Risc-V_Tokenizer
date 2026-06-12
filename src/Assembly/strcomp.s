@@ -36,6 +36,7 @@ strcomp:
     diff_strcomp:
         li a0, 0
         jal x0, fim_strcomp
+        
 fim_strcomp:
     # Volta o estado anterior
     lw t0, 8(sp)

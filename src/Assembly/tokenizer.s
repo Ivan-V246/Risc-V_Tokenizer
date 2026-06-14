@@ -22,18 +22,18 @@ tokenizer:
     sw t0, 24(sp)
     sw t1, 20(sp)
     sw t2, 16(sp)
-	sw t3, 12(sp)
+	sw s3, 12(sp)
 	sw t4, 8(sp)
     sw t5, 4(sp)
     sw t6, 0(sp)
 
     #Inicializa os dois ponteiros, e as letras 'a' e 'z' para comparação
 
-	mv t3, a1 #t3 -> Endereço base da HashTable
+	mv s3, a1 #s3 -> Endereço base da HashTable
 
 	#s8 -> Maior endereço possível da HashTable
 	slli s8, a2, 3
-	add s8, s8, t3 
+	add s8, s8, s3 
 
 	mv t5, a0
 	mv t6, a0
@@ -62,7 +62,7 @@ separador_token:
 
     sub t4, t6, t5
 
-	#Chama Hashfunc, s3 -> Hash do Token
+	#Chama Hashfunc, t3 -> Hash do Token
 	addi sp, sp, -8
     sw a1, 4(sp)
     sw a0, 0(sp)
@@ -71,15 +71,15 @@ separador_token:
 	mv a1, t4
 	jal hashfunc
 
-	mv s3, a0
+	mv t3, a0
 
 	lw a1, 4(sp)
 	lw a0, 0(sp)
 	addi sp, sp, 8
 
 	#S4 conterá o endereço do ponteiro na HashTable, s4+4 conterá a frequência
-	slli s4, s3, 3
-	add s4, s4, t3
+	slli s4, t3, 3
+	add s4, s4, s3
 
 loop_tokenizer:
 	#Carrega a frequência atual em s5
@@ -172,16 +172,16 @@ atualiza_posicao_hash:
 
 	bne s4, s8, loop_tokenizer
 
-	mv s4, t3
+	mv s4, s3
 	j loop_tokenizer
 
 fim_tokenizer: 
-	mv a0, t3
+	mv a0, s3
     lw ra, 28(sp)
     lw t0, 24(sp)
     lw t1, 20(sp)
     lw t2, 16(sp)
-	lw t3, 12(sp)
+	lw s3, 12(sp)
 	lw t4, 8(sp)
     lw t5, 4(sp)
     lw t6, 0(sp)

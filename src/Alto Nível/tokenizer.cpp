@@ -5,7 +5,7 @@
 using namespace std;
 
 
-#define name_file "./../../noites_brancas_tratado.txt"
+#define name_file "./../../texts/noites_brancas_tratado.txt"
 #define endl "\n"
 #define A (int) 'A'
 #define a (int) 'a'
@@ -42,19 +42,20 @@ int main(){
         // Ordena pela frequencia 
         sort(words.begin(), words.end(), 
             [](pair<string, int> item1, pair<string, int> item2){
-            return item1.second > item2.second;
+            if(item1.second != item2.second) return item1.second > item2.second;
+            return item1.first < item2.first;
         });
 
         //Mostra resultados 
-        cout << "Palavra --- Frequência" << endl;
+        cout << "Palavra ----> Frequência" << endl;
         for(pair<string, int> item: words)
         {
-            cout << item.first << " --- " << item.second << endl;
+            cout << item.first << " ----> " << item.second << endl;
         }
 
     }
     else{
-        cout << "Não foi possivel abri o arquivo." << endl;
+        cout << "Não foi possivel abrir o arquivo." << endl;
     }
 
     return 0;

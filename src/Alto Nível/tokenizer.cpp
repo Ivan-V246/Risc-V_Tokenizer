@@ -42,13 +42,14 @@ int main(){
         // Ordena pela frequencia 
         sort(words.begin(), words.end(), 
             [](pair<string, int> item1, pair<string, int> item2){
-            return item1.second < item2.second;
+            return item1.second > item2.second;
         });
 
         // Mostra resultados 
+        cout << "Palavra --- Frequência" << endl;
         for(pair<string, int> item: words)
         {
-            cout << "Palavra: [ " << item.first << " ] - Frequencia: [ " << item.second << " ]" << endl;
+            cout << item.first << " --- " << item.second << endl;
         }
     }
     else{

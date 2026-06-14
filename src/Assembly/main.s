@@ -1,36 +1,39 @@
 .data 
     HashTable:   .space 80056
     HashTableSize:   .word 10007
-    frase: .asciz "venha ficar venha, venha.hy ficar, agora, sl, hyhyhy.hy"
+    frase: .asciz "Venha Ficar SLA venha, venha.hy ficar, agora, sl, hy hy hy.hy"
 
 .text
 .globl main
 
 main:
-    #Chama Readfile pra ter o texto
-    #Chama ToLower para fazer o tratamento de maiúsculas
-    #Chama Tokenizer para realizar a tokenização
-    #Chama Ordenador pra organizar a tabela
+    #Chama Readfile pra ler o texto
 
-    la s0, frase
-    mv a0, s0
+    #Chama StrToLower para fazer o tratamento de maiúsculas
+    la a0, frase
 
-    la s0, HashTable
-    mv a1, s0
+    jal strtolower
 
-    la s0, HashTableSize
-    lw a2, 0(s0)
+    #Chama Tokenizer para realizar a Tokenização
+
+    la a1, HashTable
+
+    la a2, HashTableSize
+    lw a2, 0(a2)
  
     jal tokenizer
 
+    #Chama Ordenador pra organizar a tabela
+
+    #Print dos resultados
     la t0, HashTableSize
     lw t0, 0(t0)
     mv t2, a0
 
-loop_main:
+loop_print:
     lw t1, 4(t2)
 
-    beq t1, x0, nprinta
+    beq t1, x0, not_print
 
     lw t1, 0(t2)
     
@@ -52,11 +55,11 @@ loop_main:
     li a7, 11
     ecall
 
-nprinta:
+not_print:
     addi t0, t0, -1
     addi t2, t2, 8
     beq t0, x0, e
-    j loop_main
+    j loop_print
       
 e: 
 	li a7, 10

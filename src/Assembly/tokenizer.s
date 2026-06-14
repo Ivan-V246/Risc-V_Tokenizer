@@ -28,32 +28,34 @@ tokenizer:
     sw t6, 0(sp)
 
     #Inicializa os dois ponteiros, e as letras 'a' e 'z' para comparação
-	mv t3, a1 #t3 -> Endereço da HashTable
 
+	mv t3, a1 #t3 -> Endereço base da HashTable
+
+	#s8 -> Maior endereço possível da HashTable
 	slli s8, a2, 3
-	add s8, s8, t3 #s8 -> Maior endereço possível da HashTable
+	add s8, s8, t3 
 
 	mv t5, a0
-	add t6, t5, x0
+	mv t6, a0
 	
 	la t1, a
-	lbu t1, 0(t1)
+	lb t1, 0(t1)
 	
 	la t2, z
-	lbu t2, 0(t2)
+	lb t2, 0(t2)
 	
 testa_caractere:
-    #Carrega o caractere e imprime na tela caso esteja entre 'a' e 'z'
+    #Carrega o caractere e caso não seja uma letra, chama o separador do token
 	
-	lbu t0, 0(t6)
+	lb t0, 0(t6)
 	
-	blt t0, t1, not_letra
-	bgt t0, t2, not_letra
+	blt t0, t1, separador_token
+	bgt t0, t2, separador_token
 
 	addi t6, t6, 1
 	j testa_caractere
 	
-not_letra:
+separador_token:
     #Caso não seja letra, checa se os ponteiros são diferentes para salvar o token
 	
 	beq t5, t6, atualiza_ponteiro_tokenizer
@@ -86,7 +88,7 @@ loop_tokenizer:
 	#Se for zero, espaço livre
 	beq s5, x0, salva_token
 
-	#Implementar o caso triste
+	#Caso não seja zero, precisa comparar pra determinar a atualização
 	addi sp, sp,  -12
 	sw s5, 0(sp)
 	sw a1, 4(sp)
@@ -110,6 +112,8 @@ loop_tokenizer:
 	addi sp, sp,  12
 
 	#a0 -> Contém se as strings são iguais
+
+	#Caso não as strings não sejam iguais, incrementa a posição do hash
 	beq a0, x0, atualiza_posicao_hash
 
 	lw s6, 4(s4)
@@ -119,13 +123,15 @@ loop_tokenizer:
 atualiza_ponteiro_tokenizer:
     #Atualiza os ponteiros para procurar novos tokens
 	
-	lbu t0, 0(t6)
+	lb t0, 0(t6)
 	beq t0, x0, fim_tokenizer
 	addi t6, t6, 1
 	add t5, t6, x0
 	j testa_caractere
 
-salva_token:
+salva_token: #Armazena o token na tabela, com frequência um
+	
+	#Chamada de sistema para abrir espaço na heap para a string
 	addi sp, sp,  -4
 	sw t4, 0(sp)
 	
@@ -139,6 +145,7 @@ salva_token:
 
 	#a0 -> Contém o endereço da string na heap
 
+	#Chama a função de copy, para armazenar a o token no espaço da heap
 	addi sp, sp,  -8
 	sw a1, 0(sp)
 	sw a2, 4(sp)
@@ -154,6 +161,7 @@ salva_token:
 
 	#a0 -> Início da string na Heap
 
+	#Armazena na HashTable o endereço da Heap e a Frequência
 	addi s5, s5, 1
 	sw s5, 4(s4)
 	sw a0, 0(s4)
@@ -165,7 +173,7 @@ atualiza_posicao_hash:
 	bne s4, s8, loop_tokenizer
 
 	mv s4, t3
-	jal x0, loop_tokenizer
+	j loop_tokenizer
 
 fim_tokenizer: 
 	mv a0, t3

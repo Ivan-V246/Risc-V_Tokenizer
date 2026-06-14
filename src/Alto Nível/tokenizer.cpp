@@ -10,7 +10,6 @@ using namespace std;
 #define A (int) 'A'
 #define a (int) 'a'
 
-
 void tokenizer(char *line, vector<string> *tokens);
 bool isSplit(char *c);
 bool isLetterUpper(char *c);
@@ -20,47 +19,48 @@ int letterLow(char *c);
 int main(){
 
     FILE* file_text = fopen(name_file, "r");
-
-    char line[1024];
     map<string, int> frequency;
 
+    // Gerar um map com as frequencias de cada palavra
     if(file_text != nullptr){
+        char line[1024];
+
         while(fgets(line, 1024, file_text))
         {
             vector<string> tokens;
             tokenizer(line, &tokens);
 
-            cout << "Tokens gerados: " << endl;
             for(string word: tokens)
             {
                 frequency[word]++;
             }
         }
+
+        // Gerar um vector com os pair contidos no map
+        vector<pair<string, int>> words(frequency.begin(), frequency.end());
+
+        // Ordena pela frequencia 
+        sort(words.begin(), words.end(), 
+            [](pair<string, int> item1, pair<string, int> item2){
+            return item1.second < item2.second;
+        });
+
+        // Mostra resultados 
+        for(pair<string, int> item: words)
+        {
+            cout << "Palavra: [ " << item.first << " ] - Frequencia: [ " << item.second << " ]" << endl;
+        }
     }
-
-    vector<pair<string, int>> words;
-
-    for(pair<string, int> item: frequency)
-    {
-        words.push_back(item);
-    }
-
-    sort(words.begin(), words.end(), 
-        [](pair<string, int> item1, pair<string, int> item2){
-        return item1.second < item2.second;
-    });
-
-    for(pair<string, int> item: words)
-    {
-        cout << "Palavra: " << item.first << " - Frequencia: " << item.second << endl;
+    else{
+        cout << "Não foi possivel abri o arquivo." << endl;
     }
 
     return 0;
 }
 
+// Recebe uma frase e gera os tokens correspondentes no vector 
 void tokenizer(char *line, vector<string> *tokens)
 {
-
     char character;
     int index = 0;
     string word = ""; 
@@ -81,25 +81,30 @@ void tokenizer(char *line, vector<string> *tokens)
             tokens->push_back(word);
             word = "";
         }
+
         index++;
     }while(character != '\0');
 }
 
+// Verifica se chegou no fim de uma palavra
 bool isSplit(char *c)
 {
     return (*c == ' ') || (*c == '\0');
 }
 
+// Verifica se é uma letra maiuscula 
 bool isLetterUpper(char *c)
 {
     return (*c >= A && *c <= (A + 26));
 }
 
+// Verifica se é uma letra minuscula
 bool isLetterLow(char *c)
 {
     return (*c >= a && *c <= (a + 26));
 }
 
+// Transforma uma letra maiusca em minuscula 
 int letterLow(char *c)
 {
     return ((int) *c) + (a - A);

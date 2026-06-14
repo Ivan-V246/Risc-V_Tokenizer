@@ -16,13 +16,6 @@
 # t3: Interador "J".
 # =======================================================
 
-.data 
-	ARRAY: .word 8, 2, -10, 1, 6, 5, 3, 10, 4, 1 # Array com os valores a ser ordenado
-	SIZE_ARRAY: .word 5 # Tamanho do array
-	BYTES_OBJECT: .word 8 # Tamanho de cada objeto no array
-    INDEX_SORT: .word 1 # Index de ordenacao de cada objeto
-	TMP_KEY: .space 8 # Temporario para key
-	
 .text
 .globl SORTBUCK
 

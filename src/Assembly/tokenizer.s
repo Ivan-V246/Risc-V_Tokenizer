@@ -114,7 +114,7 @@ loop_tokenizer:
 	#a0 -> Contém se as strings são iguais
 
 	#Caso não as strings não sejam iguais, incrementa a posição do hash
-	beq a0, x0, atualiza_posicao_hash
+	bne a0, x0, atualiza_posicao_hash
 
 	lw s6, 4(s4)
 	addi s6, s6, 1
@@ -186,5 +186,5 @@ fim_tokenizer:
     lw t5, 4(sp)
     lw t6, 0(sp)
 	addi sp, sp, 32
+    ret
 
-	ret

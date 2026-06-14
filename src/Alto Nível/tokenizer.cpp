@@ -45,12 +45,13 @@ int main(){
             return item1.second > item2.second;
         });
 
-        // Mostra resultados 
+        //Mostra resultados 
         cout << "Palavra --- Frequência" << endl;
         for(pair<string, int> item: words)
         {
             cout << item.first << " --- " << item.second << endl;
         }
+
     }
     else{
         cout << "Não foi possivel abri o arquivo." << endl;
@@ -77,8 +78,7 @@ void tokenizer(char *line, vector<string> *tokens)
         {
             word += letterLow(&character);
         }
-        else if(isSplit(&character))
-        {
+        else if(isSplit(&character) && word != ""){
             tokens->push_back(word);
             word = "";
         }
@@ -90,7 +90,7 @@ void tokenizer(char *line, vector<string> *tokens)
 // Verifica se chegou no fim de uma palavra
 bool isSplit(char *c)
 {
-    return (*c == ' ') || (*c == '\0');
+    return !(isLetterLow(c) || isLetterUpper(c));
 }
 
 // Verifica se é uma letra maiuscula 

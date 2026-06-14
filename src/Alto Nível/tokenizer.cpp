@@ -22,7 +22,6 @@ int main(){
     FILE* file_text = fopen(name_file, "r");
 
     char line[1024];
-    int next;
     map<string, int> frequency;
 
     if(file_text != nullptr){
@@ -35,11 +34,6 @@ int main(){
             for(string word: tokens)
             {
                 frequency[word]++;
-            }
-
-            if(next == 0)
-            {
-                break;
             }
         }
     }

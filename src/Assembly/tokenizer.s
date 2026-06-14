@@ -8,6 +8,18 @@
 #
 # @return a0: Ponteiro para o endereço base da Tabela Hash preenchida
 # ==============================================================================
+# t0 -> Letra atual
+# t1 -> Primeiro ponteiro
+# t2 -> Segundo ponteiro
+# t3 -> Tamanho da palavra 
+# t4 -> Hash do token
+#
+# s1 -> Constante 'a'
+# s2 -> Constante 'z'
+# s3 -> Endereço base da HashTable
+#
+# ==============================================================================
+
 
 .data 
 	a: .ascii "a"
@@ -20,65 +32,65 @@ tokenizer:
 	addi sp, sp, -32
     sw ra, 28(sp)
     sw t0, 24(sp)
-    sw t1, 20(sp)
-    sw t2, 16(sp)
+    sw s1, 20(sp)
+    sw s2, 16(sp)
 	sw s3, 12(sp)
-	sw t4, 8(sp)
-    sw t5, 4(sp)
-    sw t6, 0(sp)
+	sw t3, 8(sp)
+    sw t1, 4(sp)
+    sw t2, 0(sp)
 
-    #Inicializa os dois ponteiros, e as letras 'a' e 'z' para comparação
+    #Inicializa as letras 'a' (s1) e 'z'(s2) para comparação, o endereço base da HashTable (s3)
+	
+	la s1, a
+	lb s1, 0(s1)
+	
+	la s2, z
+	lb s2, 0(s2)
 
-	mv s3, a1 #s3 -> Endereço base da HashTable
+	mv s3, a1 
 
+	mv t1, a0
+	mv t2, a0
+	
 	#s8 -> Maior endereço possível da HashTable
 	slli s8, a2, 3
 	add s8, s8, s3 
-
-	mv t5, a0
-	mv t6, a0
-	
-	la t1, a
-	lb t1, 0(t1)
-	
-	la t2, z
-	lb t2, 0(t2)
 	
 testa_caractere:
     #Carrega o caractere e caso não seja uma letra, chama o separador do token
 	
-	lb t0, 0(t6)
+	lb t0, 0(t2)
 	
-	blt t0, t1, separador_token
-	bgt t0, t2, separador_token
+	blt t0, s1, separador_token
+	bgt t0, s2, separador_token
 
-	addi t6, t6, 1
+	addi t2, t2, 1
 	j testa_caractere
 	
 separador_token:
     #Caso não seja letra, checa se os ponteiros são diferentes para salvar o token
 	
-	beq t5, t6, atualiza_ponteiro_tokenizer
+	beq t1, t2, atualiza_ponteiro_tokenizer
 
-    sub t4, t6, t5
+    sub t3, t2, t1
 
-	#Chama Hashfunc, t3 -> Hash do Token
+	#Chama Hashfunc, t4 -> Hash do Token
 	addi sp, sp, -8
     sw a1, 4(sp)
     sw a0, 0(sp)
 
-	mv a0, t5
-	mv a1, t4
+	mv a0, t1
+	mv a1, t3
 	jal hashfunc
 
-	mv t3, a0
+	mv t4, a0
 
 	lw a1, 4(sp)
 	lw a0, 0(sp)
 	addi sp, sp, 8
 
 	#S4 conterá o endereço do ponteiro na HashTable, s4+4 conterá a frequência
-	slli s4, t3, 3
+	slli s4, t4, 3
 	add s4, s4, s3
 
 loop_tokenizer:
@@ -96,15 +108,15 @@ loop_tokenizer:
 
 	lw s5, 0(s4) #s5 -> Endereço da palavra na heap
 	
-	lb t0, 0(t6) #t0 -> Caractere finalizador do token
+	lb t0, 0(t2) #t0 -> Caractere finalizador do token
 
-	sb x0, 0(t6)
+	sb x0, 0(t2)
 
-	mv a0, t5
+	mv a0, t1
 	mv a1, s5
 	jal strcomp
 
-	sb t0, 0(t6)
+	sb t0, 0(t2)
 
 	lw s5, 0(sp)
 	lw a1, 4(sp)
@@ -123,24 +135,24 @@ loop_tokenizer:
 atualiza_ponteiro_tokenizer:
     #Atualiza os ponteiros para procurar novos tokens
 	
-	lb t0, 0(t6)
+	lb t0, 0(t2)
 	beq t0, x0, fim_tokenizer
-	addi t6, t6, 1
-	add t5, t6, x0
+	addi t2, t2, 1
+	add t1, t2, x0
 	j testa_caractere
 
 salva_token: #Armazena o token na tabela, com frequência um
 	
 	#Chamada de sistema para abrir espaço na heap para a string
 	addi sp, sp,  -4
-	sw t4, 0(sp)
+	sw t3, 0(sp)
 	
-	addi t4, t4, 1
-	mv a0, t4
+	addi t3, t3, 1
+	mv a0, t3
 	li a7, 9
 	ecall
 
-	lw t4, 0(sp)
+	lw t3, 0(sp)
 	addi sp, sp, 4
 
 	#a0 -> Contém o endereço da string na heap
@@ -150,8 +162,8 @@ salva_token: #Armazena o token na tabela, com frequência um
 	sw a1, 0(sp)
 	sw a2, 4(sp)
 
-	mv a1, t5
-	mv a2, t4
+	mv a1, t1
+	mv a2, t3
 
 	jal strncpy
 
@@ -179,12 +191,12 @@ fim_tokenizer:
 	mv a0, s3
     lw ra, 28(sp)
     lw t0, 24(sp)
-    lw t1, 20(sp)
-    lw t2, 16(sp)
+    lw s1, 20(sp)
+    lw s2, 16(sp)
 	lw s3, 12(sp)
-	lw t4, 8(sp)
-    lw t5, 4(sp)
-    lw t6, 0(sp)
+	lw t3, 8(sp)
+    lw t1, 4(sp)
+    lw t2, 0(sp)
 	addi sp, sp, 32
     ret
 

@@ -1,6 +1,9 @@
 .data 
     HashTable:   .space 80056
     HashTableSize:   .word 10007
+
+    titulo: .asciz "Palavra ---> Frequência"
+    aux: .asciz " ---> "
     frase: .asciz "Venha Ficar SLA venha, venha.hy ficar, agora, sl, hy hy hy.hy"
 
 .text
@@ -30,6 +33,15 @@ main:
     lw t0, 0(t0)
     mv t2, a0
 
+    la a0,titulo
+    li a7, 4
+    ecall
+
+    li a0, 10
+    li a7, 11
+    ecall
+    ecall
+
 loop_print:
     lw t1, 4(t2)
 
@@ -41,8 +53,7 @@ loop_print:
     li a7, 4
     ecall
 
-    li a0, 32
-    li a7, 11
+    la a0, aux 
     ecall
 
     lw t1, 4(t2)

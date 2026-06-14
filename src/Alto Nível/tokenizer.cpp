@@ -47,7 +47,7 @@ int main(){
         });
 
         //Mostra resultados 
-        cout << "Palavra ----> Frequência" << endl;
+        cout << "Palavra ----> Frequência" << endl << endl;
         for(pair<string, int> item: words)
         {
             cout << item.first << " ----> " << item.second << endl;

@@ -1,7 +1,7 @@
 .data 
     HashTable:   .space 80056
     HashTableSize:   .word 10007
-
+    file: .asciz "/home/agso/Codes/Assembly/riscv/Risc-V_Tokenizer/texts/noites_brancas_tratado.txt"
     titulo: .asciz "Palavra ---> Frequência"
     aux: .asciz " ---> "
     frase: .asciz "Venha Ficar SLA venha, venha.hy ficar, agora, sl, hy hy hy.hy"
@@ -11,14 +11,13 @@
 
 main:
     #Chama Readfile pra ler o texto
+    la a0, file
+    jal readfile # Retorna o texto em a0
 
     #Chama StrToLower para fazer o tratamento de maiúsculas
-    la a0, frase
-
     jal strtolower
 
     #Chama Tokenizer para realizar a Tokenização
-
     la a1, HashTable
 
     la a2, HashTableSize
@@ -27,13 +26,20 @@ main:
     jal tokenizer
 
     #Chama Ordenador pra organizar a tabela
+    la a0, HashTable
+    la a1, HashTableSize
+    lw a1, 0(a1)
+    li a2, 8
+    li a3, 1
+
+    jal SORTBUCK
 
     #Print dos resultados
     la t0, HashTableSize
     lw t0, 0(t0)
     mv t2, a0
 
-    la a0,titulo
+    la a0, titulo
     li a7, 4
     ecall
 

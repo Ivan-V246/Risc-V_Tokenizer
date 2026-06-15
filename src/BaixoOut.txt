@@ -1,0 +1,3 @@
+Error in /home/agso/Codes/Assembly/riscv/Risc-V_Tokenizer/src/Assembly/sortBuck.s line 73: Runtime exception at 0x0040028c: Store address not aligned to word boundary 0x100546ab
+
+Simulation terminated due to errors.

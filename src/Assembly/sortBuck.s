@@ -1,12 +1,12 @@
 # =====================================================================================================
 # Função: sortBuck
-# Descrição: Ordena os bucks.
-# Buck: Estrutura de dados de N bytes nos quais os são escolhidos 4 bytes para como valor de ordenação    
+# Descrição: Ordena os buckets.
+# Bucket: Estrutura de dados de N bytes nos quais os são escolhidos 4 bytes para como valor de ordenação    
 # Algoritmo de ordenação: ShellSort
 
-# @param a0: Base do array para ser ordenado. 
-# @param a1: Quantidade de bucks no array.
-# @param a2: Tamanho de cada buck do array.
+# @param a0: Endereço base da Hash Table para ser ordenado. 
+# @param a1: Quantidade de buckets no array.
+# @param a2: Tamanho de cada buckets do array.
 # @param a3: Index do valor de ordenação.
 # =====================================================================================================
 
@@ -15,6 +15,9 @@
 # t2: Interador "I".
 # t3: Interador "J".
 # =======================================================
+
+.data
+    TMP_KEY: .space 8
 
 .text
 .globl SORTBUCK
@@ -32,20 +35,6 @@ SORTBUCK:
     sw ra, 0(sp)
   
     INIT: 
-        la a0, ARRAY # a0 = ARRAY   
-        
-        # a1 = *SIZE_ARRAY
-        la a1, SIZE_ARRAY
-        lw a1, 0(a1) 
-        
-        # a2 = *BYTES_OBJECT
-        la a2, BYTES_OBJECT 
-        lw a2, 0(a2) 
-        
-        # a3 = *INDEX_SORT 
-        la a3, INDEX_SORT
-        lw a3, 0(a3)
-
         # Encontra a sequência de gaps do shellsort 
         addi t1, x0, 1 # gap = 1
         addi t0, x0, 3 

@@ -38,7 +38,6 @@ strncpy:
         jal x0, loop_strncpy
         
 fim_strncpy:
-    addi a0, a0, 1
     sb x0, 0(a0)
 
     lw a0, 32(sp)
@@ -53,5 +52,3 @@ fim_strncpy:
     addi sp, sp, 36
 
     ret
-
-

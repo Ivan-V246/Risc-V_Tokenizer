@@ -63,7 +63,7 @@ SORTBUCK:
             add t4, t4, a0
 
             addi t5, a2, 0 # t5 = BYTES_OBJECT
-            la t6, TMP_KEY 
+            mv t6, a4
 
             # Salva a key em um lugar reservado
             SAVE_KEY:
@@ -123,7 +123,7 @@ SORTBUCK:
                 # Array[I][orde]
                 addi t0, x0, 4
                 mul t0, t0, a3
-                add t4, a4, x0
+                mv t4, a4
                 add t4, t4, t0 
                 lw t4, 0(t4) 
                 
@@ -138,7 +138,7 @@ SORTBUCK:
                 add t5, t5, a0
                 
                 # Recupera key 
-	            add t6, a4, x0
+	            mv t6, a4
                 addi t4, a2, 0
 
                 WRITE_KEY:

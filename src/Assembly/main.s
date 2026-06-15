@@ -2,7 +2,7 @@
     HashTable:   .space 80056
     HashTableSize:   .word 10007
     tmp_key: .space 8
-    file: .asciz "/home/agso/Codes/Assembly/riscv/Risc-V_Tokenizer/texts/noites_brancas_tratado.txt"
+    file: .asciz "/home/agso/Codes/Assembly/riscv/Risc-V_Tokenizer/texts/input.txt"
     titulo: .asciz "Palavra ---> Frequência"
     aux: .asciz " ---> "
     frase: .asciz "Venha Ficar SLA venha, venha.hy ficar, agora, sl, hy hy hy.hy"

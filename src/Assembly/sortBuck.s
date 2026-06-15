@@ -95,27 +95,38 @@ SORTBUCK:
                 add t5, t5, t6
                 add t5, t5, a0
                 lw t6, 0(t5) 
+                
+                bne t4, t6, VERIFICA_SWAP
+                
+                # Se for um espaço vazio ele pula
+                beq t4, x0, NEXT_KEY
 
-                beq t4, t6, WORD_COMP
+                jal x0, WORD_COMP
 
+                VERIFICA_SWAP:
                 blt t4, t6, NEXT_KEY # if array[j] >= key 
                 jal SWAP
 
                 WORD_COMP:
                     mul t5, t3, a2
+                    add t5, t5, a0
                     lw t6, 0(t5)
                     
                     mv t4, a0 
                     mv t5, a1
 
-                    mv a0, a4
+                    lw a0, 0(a4)
                     mv a1, t6
 
                     jal strcomp 
+                    mv t0, a0
+
+                    mv a0, t4
+                    mv a1, t5
 
                     addi t6, x0, 1
                     
-                    beq a0, t6, NEXT_KEY
+                    beq t0, t6, NEXT_KEY
                 
                 # recupera parametros
                 mv a0, t4
@@ -156,9 +167,6 @@ SORTBUCK:
                 jal x0, WHILE_SWAP
             
             NEXT_KEY: 
-                mv a0, t4
-                mv a1, t5
-
                 # ARRAY[J + gap] 
                 add t5, t3, t1
                 mul t5, t5, a2

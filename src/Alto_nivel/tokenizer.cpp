@@ -5,7 +5,7 @@
 using namespace std;
 
 
-#define name_file "./../../texts/noites_brancas_tratado.txt"
+#define name_file "./../../texts/input.txt"
 #define endl "\n"
 #define A (int) 'A'
 #define a (int) 'a'

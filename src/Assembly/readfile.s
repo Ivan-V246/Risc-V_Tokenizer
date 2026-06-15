@@ -9,7 +9,7 @@
 
 .data
     err: .asciz "Erro no arquivo"
-    buffer: .space 200000
+    buffer: .space 500000
 .text
 .globl readfile
 
@@ -28,7 +28,7 @@ readfile:
     li a7, 63
     mv a0, s0
     la a1, buffer
-    li a2, 199999
+    li a2, 490000
     ecall
 
     # Adiciona o /0 ao final

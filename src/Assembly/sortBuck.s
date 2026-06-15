@@ -8,6 +8,7 @@
 # @param a1: Quantidade de buckets no array.
 # @param a2: Tamanho de cada buckets do array.
 # @param a3: Index do valor de ordenação.
+# @param a4: Espaco de memoria para guarda dados temporarios
 # =====================================================================================================
 
 # =======================================================
@@ -15,9 +16,6 @@
 # t2: Interador "I".
 # t3: Interador "J".
 # =======================================================
-
-.data
-    TMP_KEY: .space 8
 
 .text
 .globl SORTBUCK
@@ -123,9 +121,9 @@ SORTBUCK:
                     bne t4, x0, PUSH_J # while t4 != 0
 
                 # Array[I][orde]
-                la t4, TMP_KEY
                 addi t0, x0, 4
                 mul t0, t0, a3
+                add t4, a4, x0
                 add t4, t4, t0 
                 lw t4, 0(t4) 
                 
@@ -140,7 +138,7 @@ SORTBUCK:
                 add t5, t5, a0
                 
                 # Recupera key 
-	            la t6, TMP_KEY
+	            add t6, a4, x0
                 addi t4, a2, 0
 
                 WRITE_KEY:

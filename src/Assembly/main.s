@@ -1,6 +1,7 @@
 .data 
     HashTable:   .space 80056
     HashTableSize:   .word 10007
+    tmp_key: .space 8
     file: .asciz "/home/agso/Codes/Assembly/riscv/Risc-V_Tokenizer/texts/noites_brancas_tratado.txt"
     titulo: .asciz "Palavra ---> Frequência"
     aux: .asciz " ---> "
@@ -31,6 +32,7 @@ main:
     lw a1, 0(a1)
     li a2, 8
     li a3, 1
+    la a4, tmp_key
 
     jal SORTBUCK
 

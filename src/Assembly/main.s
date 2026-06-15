@@ -1,3 +1,8 @@
+# ==============================================================================
+# Função: main
+# Descrição: Função principal do programa, responsável por comandar a execução
+# ==============================================================================
+
 .data 
     HashTable:   .space 80056
     HashTableSize:   .word 10007

@@ -9,6 +9,8 @@
 # @param a2: Tamanho de cada buckets do array.
 # @param a3: Index do valor de ordenação.
 # @param a4: Espaco de memoria para guarda dados temporarios
+#
+# @return: Void, modifica a memória diretamente
 # =====================================================================================================
 
 # =======================================================

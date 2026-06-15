@@ -8,8 +8,8 @@
 # @return: Void, não tem nenhum retorno
 # ==============================================================================
 .data
-    titulo: .asciz "Palavra\t---->\tFrequência"
-    aux: .asciz "\t---->\t"
+    titulo: .asciz "Palavra \t---->\t Frequência"
+    aux: .asciz "          \t---->\t"
 
 .text
 .globl strprint

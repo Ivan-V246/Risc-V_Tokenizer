@@ -85,7 +85,7 @@ testa_caractere:
 	
 separador_token:
     # Se os ponteiros forem iguais (token vazio) atualiza eles	
-	beq t1, t2, atualiza_ponteiro_tokenizer
+	beq t1, t2, ignora_delimitador
 
 	# Senão precisa salvar o token
 
@@ -143,6 +143,13 @@ atualiza_ponteiro_tokenizer:
 	mv t1, t2
 
 	j testa_caractere
+
+ignora_delimitador:
+    lb t0, 0(t2)
+    beq t0, x0, fim_tokenizer
+    addi t2, t2, 1
+    mv t1, t2
+    j testa_caractere
 
 salva_token: 	
 	# Chamada de sistema para abrir espaço na heap para a string

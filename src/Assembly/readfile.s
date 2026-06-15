@@ -9,7 +9,6 @@
 
 .data
     err: .asciz "Erro no arquivo"
-    buffer: .space 500000
 .text
 .globl readfile
 
@@ -24,15 +23,20 @@ readfile:
 
     mv s0, a0
 
+    li a0, 500000
+    li a7, 9
+    ecall
+    mv s1, a0
+
     # Ler do arquivo
     li a7, 63
     mv a0, s0
-    la a1, buffer
-    li a2, 490000
+    mv a1, s1
+    li a2, 499999
     ecall
 
     # Adiciona o /0 ao final
-    la t0, buffer
+    mv t0, s1
     add t0, t0, a0
     sb zero, 0(t0)
 
@@ -52,5 +56,5 @@ file_error:
     li a0, 0
     ecall
 fim:
-    la a0, buffer
+    mv a0, s1
     jalr x0, ra, 0  

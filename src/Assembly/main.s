@@ -7,7 +7,7 @@
     HashTable:   .space 80056
     HashTableSize:   .word 10007
     tmp_key: .space 8
-    file: .asciz "../../texts/input.txt"
+    file: .asciz "../../texts/inputRiscV.txt"
     
 .text
 .globl main

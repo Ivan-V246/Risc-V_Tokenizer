@@ -65,8 +65,6 @@ Risc-V_Tokenizer
 │   │   ├── tokenizer.cpp
 │   │   ├── Tratamento.cpp
 │   │   └── Tratamento.h
-│   ├── Alto Nível
-│   │   └── main.exe
 │   └── Assembly
 │       ├── hashfunc.s
 │       ├── main.s
@@ -172,7 +170,8 @@ Certifique-se de possuir os seguintes softwares instalados:
 * Compilador C++ (`g++`);
 * Java Runtime Environment (JRE);
 * Simulador RARS (`rars.jar`).
-
+* Para o script funcionar o simulador RARS deve estar instalado em (``/usr/local/bin/rars.jar``)
+  
 ---
 
 ## Clonando o Repositório
